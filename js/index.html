@@ -8,19 +8,41 @@
     <script type="module">
         import { ComplexNumber } from "https://dirkarnez.github.io/complex-number-calculator/esm/complex-number.js";
 
-        const dft = array => {
-            return array.map((value, k) => {
-                const complexNumber = new ComplexNumber();
-                // pass as string for symbolic calculation
-                // complexNumber.setExponentialForm(2, `(-1 * 2 * π * 1) / 4`);
-                complexNumber.setExponentialForm(value, (-1 * 2 * Math.PI * value * k) / array.length);
-                console.log(`rectangular form: ${complexNumber.convertToRectangularForm()}`);
-                return complexNumber;
+        const dft_equation = array => {
+            // k
+            return array.map((_, k) => {
+                // summation
+                return array.reduce((p, signalValue, n) => {
+                    const complexNumber = new ComplexNumber();
+                    // console.log(`k = ${k}, ${(-1 * 2 * Math.PI * n * k) / array.length}, ${(-1 * 2 * n * k) / array.length}`)
+                    complexNumber.setExponentialForm(signalValue, (-1 * 2 * Math.PI * n * k) / array.length);
+                    return p.add(complexNumber);
+                }, new ComplexNumber());
             })
         };
 
-        const my_dft = dft([1,2,2,0]);
-        debugger;
+        const dft_for_user = (array, sampleRate) => {
+            const isEven = num => num % 2 == 0;
+
+            // if N is odd
+            // ceil(N / 2)
+            // if N is even
+            // (N/2) + 1
+            return dft_equation(array)
+            .slice(0, isEven(array.length) ? (array.length / 2) + 1 : Math.ceil(array.length / 2))
+            .map((complexNumber, k) => {
+                console.log(`k = ${k}, freq = ${k * (sampleRate / array.length)}Hz, Rectangular Form: ${complexNumber.toString()}, Polar Form: ${complexNumber.convertToPolarForm()}`)
+            })
+        }
+
+        const my_dft_eie3312 = dft_for_user([1,2,2,0], 1000);
+        
+        function sineWaveAt(sampleRate, index, tone) {
+            var sampleFreq = sampleRate / tone;
+            return Math.sin(index / (sampleFreq / (Math.PI * 2)))
+        }
+
+        const my_dft_sin2pi440 = dft_for_user(Array(44100).fill(NaN).map((_, i) => sineWaveAt(44100, i, 440)), 44100);
     </script>
 </body>
 </html>
