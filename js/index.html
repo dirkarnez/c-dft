@@ -7,13 +7,20 @@
 <body>
     <script type="module">
         import { ComplexNumber } from "https://dirkarnez.github.io/complex-number-calculator/esm/complex-number.js";
-        
-        {
-            const complexNumber = new ComplexNumber();
-            // pass as string for symbolic calculation
-            complexNumber.setExponentialForm(2, `(-1 * 2 * π * 1) / 4`);
-            console.log(`rectangular form: ${complexNumber.convertToRectangularForm()}`);
-        }
+
+        const dft = array => {
+            return array.map((value, k) => {
+                const complexNumber = new ComplexNumber();
+                // pass as string for symbolic calculation
+                // complexNumber.setExponentialForm(2, `(-1 * 2 * π * 1) / 4`);
+                complexNumber.setExponentialForm(value, (-1 * 2 * Math.PI * value * k) / array.length);
+                console.log(`rectangular form: ${complexNumber.convertToRectangularForm()}`);
+                return complexNumber;
+            })
+        };
+
+        const my_dft = dft([1,2,2,0]);
+        debugger;
     </script>
 </body>
 </html>
