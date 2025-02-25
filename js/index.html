@@ -15,7 +15,9 @@
                 return array.reduce((p, signalValue, n) => {
                     const complexNumber = new ComplexNumber();
                     // console.log(`k = ${k}, ${(-1 * 2 * Math.PI * n * k) / array.length}, ${(-1 * 2 * n * k) / array.length}`)
-                    complexNumber.setExponentialForm(signalValue, (-1 * 2 * Math.PI * n * k) / array.length);
+                    // complexNumber.setExponentialForm(signalValue, (-1 * 2 * Math.PI * n * k) / array.length);
+
+                    complexNumber.setExponentialFormWithPI(signalValue, (-1 * 2 * n * k) / array.length) { 
                     return p.add(complexNumber);
                 }, new ComplexNumber());
             })
@@ -42,7 +44,7 @@
             return Math.sin(index / (sampleFreq / (Math.PI * 2)))
         }
 
-        const my_dft_sin2pi440 = dft_for_user(Array(44100).fill(NaN).map((_, i) => sineWaveAt(44100, i, 440)), 44100);
+        // const my_dft_sin2pi440 = dft_for_user(Array(44100).fill(NaN).map((_, i) => sineWaveAt(44100, i, 440)), 44100);
     </script>
 </body>
 </html>
