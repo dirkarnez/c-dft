@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <div id="here"></div>
+
     <script type="module">
         import { ComplexNumber } from "https://dirkarnez.github.io/complex-number-calculator/esm/complex-number.js";
 
@@ -25,26 +28,170 @@
 
         const dft_for_user = (array, sampleRate) => {
             const isEven = num => num % 2 == 0;
+            // if N is odd => ceil(N / 2)
+            // if N is even => (N/2) + 1
 
-            // if N is odd
-            // ceil(N / 2)
-            // if N is even
-            // (N/2) + 1
+            const kCount = isEven(array.length) ? (array.length / 2) + 1 : Math.ceil(array.length / 2);
             return dft_equation(array)
-            .slice(0, isEven(array.length) ? (array.length / 2) + 1 : Math.ceil(array.length / 2))
+            .slice(0, kCount)
             .map((complexNumber, k) => {
-                console.log(`k = ${k}, freq = ${k * (sampleRate / array.length)}Hz, Rectangular Form: ${complexNumber.toString()}, Polar Form: ${complexNumber.convertToPolarForm()}`)
-            })
+                const amplitude = complexNumber.multiplyWithScalar(2).amplitude() / sampleRate;
+                const hz = k * (sampleRate / array.length);
+                console.log(`k = ${k}, freq = ${hz}Hz, amplitude = ${amplitude}, Rectangular Form: ${complexNumber.toString()}, Polar Form: ${complexNumber.convertToPolarForm()}`);
+                return { amplitude, hz };
+            });
         }
 
         const my_dft_eie3312 = dft_for_user([1,2,2,0], 1000);
-        
-    
-        const setPrecision = num => Number(Number((num < 0.001 && num > -0.001) ? 0 : num).toPrecision(3));
-        const generateArray = (length, callback) => Array.from({length: 8}, (_, i) => setPrecision(callback(i)));
 
-        const my_dft_sin2pi = generateArray(8, i => Math.sin(i / (8 / 1 / (2 * Math.PI))));
-        dft_for_user(my_dft_sin2pi);
+        const setPrecision = num => Number(Number((num < 0.001 && num > -0.001) ? 0 : num).toPrecision(3));
+
+        const generateDiscreteSignalArray = (lengthInSeconds, samplingFrequency, indexCallback) => Array.from({length: lengthInSeconds * samplingFrequency}, (_, i) => setPrecision(indexCallback(i)));
+
+        /*
+        1 Hz, amplitude 1, Sampling frequency 8 hz
+        */
+        const lengthInSeconds = 1;
+        const samplingFrequency = 8;
+        const amplitude = 2;
+        const toneHz = 1;
+        const my_dft_sin2pi = generateDiscreteSignalArray(lengthInSeconds, samplingFrequency, i => amplitude * Math.sin(i / (samplingFrequency / toneHz / (2 * Math.PI))));
+        const dft = dft_for_user(my_dft_sin2pi, samplingFrequency);
+
+        // set the dimensions and margins of the graph
+        var margin = {top: 30, right: 30, bottom: 70, left: 60},
+            width = 460 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select(`#here`)
+            .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
+
+
+// X axis
+var x = d3.scaleBand()
+  .range([ 0, width ])
+  .domain(dft.map(d => d.hz))
+  .padding(0.2);
+  
+svg.append("g")
+  .attr("transform", `translate(0, ${height})`)
+  .call(d3.axisBottom(x))
+  .selectAll("text")
+    .attr("transform", "translate(-10,0)rotate(-45)")
+    .style("text-anchor", "end");
+
+// Add Y axis
+var y = d3.scaleLinear()
+  .domain([0, d3.max(dft, d => d.amplitude)])
+  .range([ height, 0]);
+svg.append("g")
+  .call(d3.axisLeft(y));
+
+svg.selectAll("mybar")
+  .data(dft)
+  .join("rect")
+    .attr("x", d => x(d.hz))
+    .attr("y", d => y(d.amplitude))
+    .attr("width", x.bandwidth())
+    .attr("height", d => height - y(d.amplitude))
+    .attr("fill", "#69b3a2")
+
+            // .append("g")
+            //     .attr("transform",
+            //         "translate(" + margin.left + "," + margin.top + ")");
+
+        // const x = d3.scaleBand()
+        //     .domain([0, dft.length - 1])
+        //     .range([marginLeft, width - marginRight])
+        //     .padding(0.1);
+
+        // const y = d3.scaleLinear()
+        //     .domain([0, d3.max(dft,  d => d.amplitude)])
+        //     .range([height - marginBottom, marginTop]);
+
+
+        //     debugger;
+
+
+        // // Add a rect for each bar.
+        // svg.append("g")
+        //     .attr("fill", "steelblue")
+        //     .selectAll()
+        //     .data(dft)
+        //     .join("rect")
+        //     .attr("x", (d) => x(d.hz))
+        //     .attr("y", (d) => y(d.amplitude))
+        //     .attr("height", (d) => y(0) - y(d.amplitude))
+        //     .attr("width", x.bandwidth());
+
+        // // Add the x-axis and label.
+        // svg.append("g")
+        //     .attr("transform", `translate(0,${height - marginBottom})`)
+        //     .call(d3.axisBottom(x));
+
+        // // Add the y-axis and label, and remove the domain line.
+        // svg.append("g")
+        //     .attr("transform", `translate(${marginLeft},0)`)
+        //     .call(d3.axisLeft(y).tickFormat((y) => (y * 100).toFixed()))
+        //     .call(g => g.select(".domain").remove())
+        //     .call(g => g.append("text")
+        //         .attr("x", -marginLeft)
+        //         .attr("y", 10)
+        //         .attr("fill", "currentColor")
+        //         .attr("text-anchor", "start")
+        //         .text("↑ Frequency (%)"));
+
+
+
+
+
+        // // Add the y-axis and label, and remove the domain line.
+        // svg.append("g")
+        //     .attr("transform", `translate(${margin.left},0)`)
+        //     .call(d3.axisLeft(y).tickFormat((y) => (y * 100).toFixed()))
+        //     .call(g => g.select(".domain").remove())
+        //     .call(g => g.append("text")
+        //         .attr("x", -margin.left)
+        //         .attr("y", 10)
+        //         .attr("fill", "currentColor")
+        //         .attr("text-anchor", "start")
+        //         .text("↑ Frequency (%)"));
+
+        // svg.append("g")
+        //     .attr("transform", "translate(0," + height + ")")
+        //     .call(d3.axisBottom(x));
+
+        // // set the parameters for the histogram
+        // var histogram = d3.histogram()
+        //     .value(function(d) { return d; })   // I need to give the vector of value
+        //     .domain(x.domain());  // then the domain of the graphic
+        //     // .thresholds(x.ticks(70)); // then the numbers of bins
+
+        // // And apply this function to data to get the bins
+        // var bins = histogram(dft);
+
+        // // Y axis: scale and draw:
+        // // var y = d3.scaleLinear()
+        // //     .range([height, 0]);
+        // //     y.domain([0, d3.max(bins, function(d) { return d; })]);   // d3.hist has to be called before the Y axis obviously
+        // // svg.append("g")
+        // //     .call(d3.axisLeft(y));
+
+        // // append the bar rectangles to the svg element
+        // svg.selectAll("rect")
+        //     .data(bins)
+        //     .enter()
+        //     .append("rect")
+        //         .attr("x", 1)
+        //         .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+        //         .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+        //         .attr("height", function(d) { return height - y(d.length); })
+        //         .style("fill", "#69b3a2")
         
         
 //         function sineWaveAt(sampleRate, index, tone) {
