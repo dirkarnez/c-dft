@@ -39,12 +39,25 @@
 
         const my_dft_eie3312 = dft_for_user([1,2,2,0], 1000);
         
-        function sineWaveAt(sampleRate, index, tone) {
-            var sampleFreq = sampleRate / tone;
-            return Math.sin(index / (sampleFreq / (Math.PI * 2)))
-        }
+    
+        const setPrecision = num => Number(Number((num < 0.001 && num > -0.001) ? 0 : num).toPrecision(3));
+        const generateArray = (length, callback) => Array.from({length: 8}, (_, i) => setPrecision(callback(i)));
 
-        const my_dft_sin2pi440 = dft_for_user(Array(1000).fill(NaN).map((_, i) => sineWaveAt(1000, i, 440)), 1000);
+        const my_dft_sin2pi = generateArray(8, i => Math.sin(i / (8 / 1 / (2 * Math.PI))));
+        dft_for_user(my_dft_sin2pi);
+        
+        
+//         function sineWaveAt(sampleRate, index, tone) {
+//             var sampleFreq = sampleRate / tone;
+//             return Math.sin(index / (sampleFreq / (Math.PI * 2)))
+//         }
+//         dft_for_user(Array(1000).fill(NaN).map((_, i) => sineWaveAt(1000, i, 440)), 1000);
+
+
+        
+//         Array.from({length: 8}, (v, i) => setPrecision();
+// debugger;
+        // const my_dft_sin2pi440 = dft_for_user(Array(1000).fill(NaN).map((_, i) => sineWaveAt(1000, i, 440)), 1000);
     </script>
 </body>
 </html>
