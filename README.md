@@ -11,6 +11,8 @@
 
 ### Integration
 - [Signals and Sine Waves (Learn Web Audio from the Ground Up, Part 1)](https://teropa.info/blog/2016/08/04/sine-waves)
+- [Synthesizing sound with JavaScript: sine wave | by Ivan Sergiienko | Medium](https://darthvanger.medium.com/synthesize-sound-with-javascript-sine-wave-940f9cd7dae2)
+- [Oscillating sine wave, including the steps to figuring out how to plot a sine wave · GitHub](https://gist.github.com/gkhays/e264009c0832c73d5345847e673a64ab)
 
 ### Tutorials
 - [**Discrete Fourier Transform - Simple Step by Step - YouTube**](https://www.youtube.com/watch?v=mkGsMWi_j4Q)
