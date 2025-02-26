@@ -9,6 +9,9 @@
 - exp(sqrt(-1) * 3.14) = -0.9999
   - pi is only 180 degree when presented (and radian is the unit), pi is always 3.14.. when doing calculation
 
+### Integration
+- [Signals and Sine Waves (Learn Web Audio from the Ground Up, Part 1)](https://teropa.info/blog/2016/08/04/sine-waves)
+
 ### Tutorials
 - [**Discrete Fourier Transform - Simple Step by Step - YouTube**](https://www.youtube.com/watch?v=mkGsMWi_j4Q)
   - very very good
