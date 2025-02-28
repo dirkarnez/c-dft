@@ -9,6 +9,9 @@
 - exp(sqrt(-1) * 3.14) = -0.9999
   - pi is only 180 degree when presented (and radian is the unit), pi is always 3.14.. when doing calculation
 
+### Notes
+- > Scaling Factor: The DFT outputs include a scaling factor based on the number of samples. If you want to obtain the true amplitude of the frequency components, you need to scale the result appropriately. For an N-point DFT, the magnitudes are typically scaled by 1/N.
+
 ### Integration
 - [Signals and Sine Waves (Learn Web Audio from the Ground Up, Part 1)](https://teropa.info/blog/2016/08/04/sine-waves)
 - [Synthesizing sound with JavaScript: sine wave | by Ivan Sergiienko | Medium](https://darthvanger.medium.com/synthesize-sound-with-javascript-sine-wave-940f9cd7dae2)
