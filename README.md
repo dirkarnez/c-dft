@@ -2,10 +2,26 @@
 ===========================================
 ![](./images/Untitled.jpg)
 - [DFT Graphical Interpretation: Centroids of Weighted Roots of Unity - Cedron Dawg](https://www.dsprelated.com/showarticle/768.php)
-  - ```python
+  - Basic mathematical
+    ```python
     S = np.fft.fft(np.array([1, 2, 2, 0]))        
     print(S)
     ```
+  - Do this on real signals (`rfft`, `rfftfreq`)
+    ```python
+    import numpy as np
+
+    signal = np.array([1, 2, 2, 0], dtype=float)
+    sample_rate = 1000
+    
+    fourier = np.fft.rfft(signal)
+    freq = sorted(np.fft.rfftfreq(signal.size, d=(1/sample_rate)))
+    print(fourier)
+    print(freq)
+    ```
+
+
+
 - exp(sqrt(-1) * 3.14) = -0.9999
   - pi is only 180 degree when presented (and radian is the unit), pi is always 3.14.. when doing calculation
 
