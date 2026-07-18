@@ -10,12 +10,12 @@
   - Do this on real signals (`rfft`, `rfftfreq`)
     ```python
     import numpy as np
-
+    
     signal = np.array([1, 2, 2, 0], dtype=float)
     sample_rate = 1000
-    
+        
     fourier = np.fft.rfft(signal)
-    freq = sorted(np.fft.rfftfreq(signal.size, d=(1/sample_rate)))
+    freq = np.fft.rfftfreq(signal.size, d=(1/sample_rate))
     print(fourier)
     print(freq)
     ```
