@@ -19,6 +19,25 @@
     print(fourier)
     print(freq)
     ```
+  - IDFT
+    ```python
+    import numpy as np
+    
+    signal = np.array([1, 2, 2, 0], dtype=float)
+    
+    fourier = np.fft.fft(signal)
+    print(f"fourier {fourier}")
+
+    n = np.arange(signal.size)  # 時域索引 [0, 1, 2, 3]
+    k = np.arange(signal.size)  # 頻域索引 [0, 1, 2, 3]
+
+    # 注意：IDFT 使用正指數 (+2j)，且最後要除以 N
+    IDFT_MAT = np.exp(2.0j * np.pi * n[:, None] * k[None, :].astype(float) / signal.size) / signal.size
+
+    # 3. 矩陣相乘還原訊號
+    recovered_signal = IDFT_MAT @ fourier
+    print(f"Recovered: {recovered_signal.real}")  # 取實部
+    ```
 
 
 
